@@ -100,7 +100,7 @@ resource "aws_launch_template" "web" {
 resource "aws_autoscaling_group" "web" {
   name_prefix               = "${var.name}-asg-"
   min_size                  = 2
-  max_size                  = 4
+  max_size                  = 3
   desired_capacity          = 2
   vpc_zone_identifier       = var.private_subnet_ids
   target_group_arns         = [aws_lb_target_group.web.arn]
