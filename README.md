@@ -55,3 +55,30 @@ Every resource is tagged with:
 | Project | aws-portfolio-platform |
 | Environment | dev or prod |
 | Owner | joel |
+
+## CI/CD pipeline (GitHub Actions + OIDC)
+
+Every change to this repo goes through a pull request. Nobody runs `terraform apply` from a laptop.
+
+```
+branch → PR → Terraform Plan (fmt, validate, Checkov, plan → PR comment)
+       → merge to main (blocked until plan passes)
+       → Terraform Apply (pauses for approval on the dev environment)
+       → AWS
+```
+
+| Workflow | Trigger | What it does |
+|---|---|---|
+| `terraform-plan.yml` | Pull request to `main` | Logs in to AWS via OIDC, checks formatting, validates, runs a Checkov security scan, and posts the Terraform plan as a PR comment |
+| `terraform-apply.yml` | Merge to `main` touching `envs/dev/` or `modules/`, or the manual **Run workflow** button | Waits for a required reviewer, then applies (or destroys) the dev environment |
+
+**Security choices**
+
+- **No stored AWS keys.** GitHub Actions assumes the `github-actions-terraform` IAM role through OIDC and gets short-lived credentials for each run (`global/github-oidc.tf`).
+- **Locked-down trust policy.** The role trusts only tokens for `sts.amazonaws.com` from this repository, matched by GitHub's owner and repo IDs, so a deleted-and-recreated repo with the same name can't assume it.
+- **Branch protection on `main`.** Changes need a pull request, and the `plan` check must pass before merging. No bypassing.
+- **Approval gate.** The `dev` environment requires a reviewer and only accepts deployments from `main`.
+- **One apply at a time.** A `concurrency` group stops two applies from colliding on the same state.
+- **Known tradeoff:** the pipeline role uses `AdministratorAccess` to keep the portfolio simple. In production I'd scope it to only the services Terraform manages (least privilege).
+
+**Account-wide resources** live in `global/` with their own state key (`global/terraform.tfstate`), so tearing down dev never removes the OIDC role the pipeline needs.
