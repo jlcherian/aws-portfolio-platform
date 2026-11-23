@@ -186,14 +186,3 @@ resource "aws_appautoscaling_policy" "cpu" {
     target_value = 50
   }
 }
-
-module "ecs" {
-  source             = "../../modules/ecs"
-  name               = "portfolio-dev"
-  vpc_id             = module.network.vpc_id
-  private_subnet_ids = module.network.private_subnet_ids
-  alb_sg_id          = module.compute.alb_sg_id
-  listener_arn       = module.compute.listener_arn
-  image              = "558158825841.dkr.ecr.us-east-1.amazonaws.com/portfolio-app:v1"
-}
-
