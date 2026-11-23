@@ -1,6 +1,6 @@
 import os
 from flask import Flask, jsonify
-
+raise RuntimeError("Deliberately broken deploy to test rollback")
 app = Flask(__name__)
 VERSION = os.environ.get("APP_VERSION", "local")
 
