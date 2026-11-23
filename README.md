@@ -44,16 +44,16 @@ A highly available, containerized web application on AWS, built entirely with Te
 
 **Phase 1:** the load balancer spreads traffic across both Availability Zones:
 
-[Response from the web server in us-east-1a](docs/images/hello-az-a.png)
-[Response from the web server in us-east-1b](docs/images/hello-az-b.png)
+![Response from the web server in us-east-1a](docs/images/hello-az-a.png)
+![Response from the web server in us-east-1b](docs/images/hello-az-b.png)
 
 **Phase 3:** the app running on ECS Fargate, deployed by the pipeline:
 
-[App running on ECS Fargate](docs/images/ecs-app.png)
+![App running on ECS Fargate](docs/images/ecs-app.png)
 
 **Phase 3:** a deliberately broken deploy. The new containers crashed on startup, the ECS deployment circuit breaker stopped the rollout and rolled back automatically, and the site stayed up the whole time:
 
-[ECS events showing the failed deployment and successful rollback](docs/images/ecs-rollback.png)
+![ECS events showing the failed deployment and successful rollback](docs/images/ecs-rollback.png)
 
 ## How to deploy
 
