@@ -196,3 +196,4 @@ module "ecs" {
   listener_arn       = module.compute.listener_arn
   image              = "558158825841.dkr.ecr.us-east-1.amazonaws.com/portfolio-app:v1"
 }
+
