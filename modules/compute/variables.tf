@@ -23,3 +23,8 @@ variable "instance_type" {
   type        = string
   default     = "t3.micro"
 }
+
+variable "certificate_arn" {
+  description = "ACM certificate for the HTTPS listener (from the certificate module)"
+  type        = string
+}
